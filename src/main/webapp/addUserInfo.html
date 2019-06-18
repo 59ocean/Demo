@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>医疗设备检修预警系统</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script type="text/javascript" src="jquery/jquery3.4.1.js"></script>
+
+</head>
+<body style="margin-right: 50px">
+<br>
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名</label>
+        <div class="layui-input-block">
+            <input type="text" name="uname" lay-verify="uname" autocomplete="off" placeholder="请输入用户名" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">Email</label>
+        <div class="layui-input-block">
+            <input type="text" name="email" lay-verify="required"  placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">权限</label>
+        <div class="layui-input-block">
+            <select id="role" name="role" class="layui-input" >
+                <option value="管理员">管理员</option>
+                <option value="检修员">检修员</option>
+                <option value="职员">职员</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn"  lay-filter="demo1">确认添加</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+    <br>
+</form>
+<script type="text/javascript" src="layui/layui.all.js"></script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>医疗设备检修预警系统</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script type="text/javascript" src="jquery/jquery3.4.1.js"></script>
+<style >
+    .layui-table-cell {            overflow: visible !important;        }
+     td .layui-form-select{
+        margin-top: -10px;
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+
+</style>
+</head>
+<body>
+<script>
+    $(function () {
+        loadAllUserInfo();
+        /*layui.use("table",function () {
+            layui.table.on('tool("tbl_tools")',function (obj) {
+                if(obj.event=="refresh"){
+                    layer.msg("click");
+                }
+            })
+        })*/
+    });
+    function addUserInfo() {
+        layer.open({
+            type: 2,
+            title: "添加用户信息",
+            closeBtn: 1, //不显示关闭按钮
+            area: ['340px', '300px'],
+            anim: 2,
+            content: ['addUserInfo.html', 'no'] //iframe的url，no代表不显示滚动
+    });}
+    function refreshTable() {
+        layui.table.reload("id",{
+            page: {
+                curr: 1 //重新从第 1 页开始
+            },where: {
+                key: {
+                    uname: $("#tool_uname").val()
+                }
+            }
+        },"data");
+    }
+    function searchByUname() {
+        loadAllUserInfo();
+    }
+    function  deleteBenchById(){
+        table1=layui.table.checkStatus("id");
+        var str="";
+       $.each(table1.data,function (index,arr) {
+          str+= arr.id+",";
+       });
+    if(str.length==0)
+        layer.msg("请选择一行数据!");
+    else
+    {    layer.confirm("是否真的删除本记录?",{btn:["确定","取消"]},function (index,layero) {
+            $.ajax({
+                url:"user/deleteBanchByID.do",
+                data:{id:str},
+                method:"post",
+                success:function (e) {
+                    if(JSON.parse(e)=="success")
+                        layer.msg("删除记录成功！");
+                    else
+                        layer.msg("删除记录失败！");
+                    //对layui table的刷新
+                    layui.table.reload("id");
+                },error:function () {
+                    layer.msg("请求服务器失败！");
+                }
+            });
+        });
+    }
+    }
+    function  deleteById(id) {
+        layer.confirm("是否真的删除本记录?",{btn:["确定","取消"]},function (index,layero) {
+            $.ajax({
+                url:"user/deleteBanchByID.do",
+                data:{id:id},
+                method:"post",
+                success:function (e) {
+                    if(JSON.parse(e)=="success")
+                        layer.msg("删除记录成功！");
+                    else
+                        layer.msg("删除记录失败！");
+                    //对layui table的刷新
+                    layui.table.reload("id");
+                },error:function () {
+                    layer.msg("请求服务器失败！");
+                }
+            });
+        });
+
+    }
+    function loadAllUserInfo() {
+        layui.use("table", function () {
+            layui.table.render({
+                elem: "#userTable",
+                toolbar: "#tbl_tools",
+                url: "user/findAllUser.do",
+                where:{"uname":$("#tool_uname").val()},
+                loading: true,
+                title: "用户信息列表",
+                page: true,
+                limit: 10,
+                id: "id",
+                limits: [5, 10, 20, 50, 100],
+                cols: [[
+                    {
+                        field: "id",
+                        title: "ID",
+                        align: "center",
+                        type: "checkbox"
+                    },
+                    {
+                        field: "",
+                        title: "序号",
+                        align: "center",
+                        type: "numbers"
+                    },
+                    {
+                        field: "uname",
+                        title: "用户名",
+                        align: "center",
+                        edit:true
+                    },
+                    {
+                        field: "photo",
+                        title: "头像",
+                        align: "center",
+                        templet:function (row) {
+                         if (row.photo==null)
+                                return "<img class='layui-circle' src='images/defaultPhoto.jpg' style='width:30px;height:30px'/>";
+                                else
+                            return "<img class='layui-circle' src='"+row.photo+"' style='width:30px;height:30px'/>";
+                        }
+
+                    },
+                    {
+                        field: "role",
+                        title: "角色",
+                        align: "center",
+                       // templet:"#table_role"
+                        edit:true
+                    },
+                    {
+                        field: "email",
+                        title: "邮箱",
+                        align: "center"
+                    },
+                    {
+                        field: "registerTime",
+                        title: "注册时间",
+                        align: "center"
+                    },
+                    {
+                        field: "lastLoginTime",
+                        title: "最后一次登录时间",
+                        align: "center"
+                    },
+                    {
+                        field: "id",
+                        title: "操作",
+                        align: "center",
+                        minWidth: "10",
+                        templet: function (row) {
+                            var del = '<a href="javascript:deleteById('+row.id+')" title="删除"><span style="font-size: 25px;color: #FF0000;" class="layui-icon layui-icon-delete"></span></a>';
+                            var update = "<a href='javascript:addUserInfo()' title='更新'><span style='font-size: 25px;color: #0000FF;' class='layui-icon layui-icon-table'></span></a>";
+                            return del+update;
+                        }
+                    }
+                ]]
+            });
+        });
+
+    }
+</script>
+<blockquote class="layui-elem-quote">
+    用户信息管理
+</blockquote>
+<table id="userTable" class="layui-table">
+
+</table>
+<script id="tbl_tools" type="text/html">
+    <a href="javascript:addUserInfo()" class="layui-btn layui-btn-danger">
+        <span class="layui-icon layui-icon-add-1"></span> 添加用户</a>
+    <a href="javascript:deleteBenchById()" class="layui-btn layui-btn-primary">
+        <span class="layui-icon layui-icon-delete" ></span> 删除用户</a>
+    <div class="layui-inline">
+        <input id="tool_uname" class="layui-input-block"  style="width: 100px" placeholder="请输入用户名">
+        <a href="javascript:loadAllUserInfo()" class="layui-btn layui-btn-danger">
+            <span class="layui-icon layui-icon-search"></span> 搜索</a>
+    </div>
+    <!--<a href="javascript:refreshTable()" class="layui-btn layui-btn-warm" lay-event="refresh">
+        <span class="layui-icon layui-icon-refresh"></span> 刷新</a>-->
+</script>
+<script type="text/html" id="table_role">
+        <select id="role" name="role">
+        <option value="管理员">管理员</option>
+        <option value="检修员">检修员</option>
+        <option value="职员">职员</option>
+        </select>
+</script>
+<script type="text/javascript" src="layui/layui.all.js"></script>
+</body>
+</html>

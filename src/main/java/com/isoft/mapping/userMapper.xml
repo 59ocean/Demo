@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.isoft.mapping.userMapper">
+    <select id="findUserByUnameAndUpwd" parameterType="map" resultType="map">
+     select * from tb_user where uname=#{uname} and upwd=md5(#{upwd})
+    </select>
+    <select id="findAllUser" parameterType="map" resultType="map">
+        select * from tb_user inner join tb_userinfo on tb_user.uname=tb_userinfo.uname
+        <where>
+            <if test="uname!=null">
+                and tb_user.uname like concat("%",concat(#{uname},"%"))
+            </if>
+        </where>
+        limit #{recordIndex},#{pagesize}
+    </select>
+    <select id="findCount" resultType="map">
+           select count(*) as `count` from tb_user inner join tb_userinfo on tb_user.uname=tb_userinfo.uname
+    </select>
+    <delete id="deleteBatchById" parameterType="string">
+        delete from tb_user where id =#{id}
+   <!--     <foreach collection="array" index="index" open="(" close=")" separator=",">
+        #{id}
+        </foreach>-->
+    </delete>
+    <select id="userGenderAnalySis" resultType="map">
+        select gender,count(*) as `count`  from tb_userinfo GROUP BY gender
+    </select>
+    <update id="updatePhoto" parameterType="map">
+        update tb_userinfo set photo=#{photo} where uname=#{uname}
+    </update>
+</mapper>
