@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>医疗设备检修预警系统</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script type="text/javascript" src="jquery/jquery3.4.1.js"></script>
+    <!--<script type="text/javascript" src="layui/layui.all.js"></script>-->
+    <script type="text/javascript" src="plugins/layui-v2/layui.all.js"></script>
+<style >
+    .layui-table-cell {            overflow: visible !important;        }
+     td .layui-form-select{
+        margin-top: -10px;
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+
+</style>
+    <script>
+
+        function addUserInfo() {
+            layer.open({
+                type: 2,
+                title: "添加用户信息",
+                closeBtn: 1, //不显示关闭按钮
+                area: ['400px', '500px'],
+                anim: 2,
+                content: ['addEquiment.html', 'no'], //iframe的url，no代表不显示滚动
+               /* end: function(layero, lockIndex) {
+                    //alert(JSON.stringify(data));
+                    var body = layer.getChildFrame('body', lockIndex);
+                    layer.close(lockIndex);
+                    location.reload();//刷新
+                    console.log("ddd")
+
+                    //body.find("select,:radio,:checkbox").attr("disabled", "disabled");
+                }*/
+            });}
+
+        function editinfo(data) {
+            layer.open({
+                type: 2,
+                title: "修改信息",
+                closeBtn: 1, //不显示关闭按钮
+                area: ['400px', '500px'],
+                anim: 2,
+                content: ['editEquiment.html?obj='+encodeURIComponent(JSON.stringify(data)), 'no'], //iframe的url，no代表不显示滚动
+                /* end: function(layero, lockIndex) {
+                     //alert(JSON.stringify(data));
+                     var body = layer.getChildFrame('body', lockIndex);
+                     layer.close(lockIndex);
+                     location.reload();//刷新
+                     console.log("ddd")
+
+                     //body.find("select,:radio,:checkbox").attr("disabled", "disabled");
+                 }*/
+            });}
+    </script>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+    <script id="tbl_tools" type="text/html">
+        <a href="javascript:addUserInfo()" class="layui-btn layui-btn-danger">
+            <span class="layui-icon layui-icon-add-1"></span> 添加设备</a>
+        <!-- <a href="javascript:deleteBenchById()" class="layui-btn layui-btn-primary">
+             <span class="layui-icon layui-icon-delete" ></span> 删除用户</a>-->
+        <div class="layui-inline">
+            <input id="tool_uname" class="layui-input-block"  style="width: 100px" placeholder="请输入设备名">
+            <a href="javascript:loadAllUserInfo()" class="layui-btn layui-btn-danger">
+                <span class="layui-icon layui-icon-search"></span> 搜索</a>
+        </div>
+        <!--<a href="javascript:refreshTable()" class="layui-btn layui-btn-warm" lay-event="refresh">
+            <span class="layui-icon layui-icon-refresh"></span> 刷新</a>-->
+    </script>
+</head>
+<body>
+<div style="margin-bottom: 5px;">
+
+    <!-- 示例-970 -->
+    <ins class="adsbygoogle" style="display:inline-block;width:970px;height:90px" data-ad-client="ca-pub-6111334333458862" data-ad-slot="3820120620"></ins>
+
+</div>
+
+<table id="userTable" class="layui-table" lay-filter="demo">
+
+</table>
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑w</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+
+<!--<script src="//res.layui.com/layui/dist/layui.js" charset="utf-8"></script>-->
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+
+    layui.use('table', function(){
+        var table = layui.table;
+        table.render({
+            elem: "#userTable",
+            toolbar: "#tbl_tools",
+            url: "equipment/list.do",
+            loading: true,
+            title: "用户信息列表",
+            page: true,
+            limit: 10,
+            id: "id",
+            limits: [5, 10, 20, 50, 100],
+            cols: [[
+                {
+                    field: "id",
+                    title: "ID",
+                    align: "center",
+                    type: "checkbox"
+                },
+                {
+                    field: "name",
+                    title: "设备名",
+                    align: "center",
+                },
+                {
+                    field: "buyTime",
+                    title: "购买时间",
+                    align: "center",
+                },
+                {
+                    field: "department",
+                    title: "所属科室",
+                    align: "center",
+                },{
+                    field: "supplier",
+                    title: "所属供应商",
+                    align: "center",
+                },
+                {
+                    field: "overhaulCycle",
+                    title: "检修周期",
+                    align: "center",
+                },
+                {
+                    field: "lastOverhaulTime",
+                    title: "上次检修时间",
+                    align: "center",
+                },
+                {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+            ]]
+        });
+        //监听表格复选框选择
+        table.on('checkbox(demo)', function(obj){
+            console.log(obj)
+        });
+        //监听工具条
+        table.on('tool(demo)', function(obj){
+            var data = obj.data;
+            console.log(data)
+            if(obj.event === 'detail'){
+                layer.msg('ID：'+ data.id + ' 的查看操作');
+            } else if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    deleteById(data.id)
+                });
+            } else if(obj.event === 'edit'){
+                editinfo(data)
+               // layer.alert('编辑行：<br>'+ JSON.stringify(data))
+            }
+        });
+
+        var $ = layui.$, active = {
+            getCheckData: function(){ //获取选中数据
+                var checkStatus = table.checkStatus('idTest')
+                    ,data = checkStatus.data;
+                layer.alert(JSON.stringify(data));
+            }
+            ,getCheckLength: function(){ //获取选中数目
+                var checkStatus = table.checkStatus('idTest')
+                    ,data = checkStatus.data;
+                layer.msg('选中了：'+ data.length + ' 个');
+            }
+            ,isAll: function(){ //验证是否全选
+                var checkStatus = table.checkStatus('idTest');
+                layer.msg(checkStatus.isAll ? '全选': '未全选')
+            }
+        };
+
+        $('.demoTable .layui-btn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+
+
+        function  deleteById(id) {
+            console.log(id)
+
+                $.ajax({
+                    url:"equipment/delete.do",
+                    data:{id:id},
+                    method:"post",
+                    success:function (e) {
+                        console.log(e)
+                        if(e.success)
+                            layer.msg("删除记录成功！");
+                        else
+                            layer.msg("删除记录失败！");
+                        //对layui table的刷新
+                        layui.table.reload("id");
+                    },error:function () {
+                        layer.msg("请求服务器失败！");
+                    }
+                });
+
+
+        }
+
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>医疗设备检修预警系统</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script type="text/javascript" src="jquery/jquery3.4.1.js"></script>
+    <script type="text/javascript" src="plugins/layui-v2/layui.all.js"></script>
+</head>
+<body style="margin-right: 50px">
+<br>
+<form name="form" class="layui-form"lay-filter="formTest" style="margin-top: 20px;" method="post" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">设备名</label>
+        <div class="layui-input-block">
+            <input type="text" name="name" id="name" lay-verify="uname" autocomplete="off" placeholder="请输入用户名" class="layui-input">
+        </div>
+    </div>
+    <!--<div class="layui-form-item">
+        <label class="layui-form-label">购买时间</label>
+        <div class="layui-input-block">
+            <input type="text" name="buyTime2" id="buyTime" lay-verify="required"  placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+        </div>
+    </div>-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">所属科室</label>
+        <div class="layui-input-block">
+            <input type="text" name="department" id="department" lay-verify="required"  placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">供应商</label>
+        <div class="layui-input-block">
+            <input type="text" name="supplier" id="supplier" lay-verify="required"  placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">检修周期</label>
+        <div class="layui-input-block">
+            <input type="number" name="overhaulCycle" id="overhaulCycle" lay-verify="required"  placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <!-- 按钮组 -->
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit="" lay-filter="btnSubmit" >立即提交</button>
+            <button class="layui-btn layui-btn-primary" id="close">关闭</button>
+        </div>
+    </div>
+    <br>
+</form>
+<script>
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+            elem: '#buyTime' //指定元素
+        });
+    });
+
+
+</script>
+
+<script type="text/javascript">
+
+    layui.use(['form', 'layedit', 'laydate','jquery'], function() {
+        var form = layui.form;
+        var $ = layui.jquery;
+        //获取传参
+        var data =JSON.parse(decodeURIComponent(getRequestParam().obj));
+        console.log(data)
+        $("#name").val(data.name)
+        //监听提交
+        form.on('submit(btnSubmit)', function (data) {
+            console.log(data)
+            var index = layer.load(1);//开启进度条
+            var index2 = parent.layer.getFrameIndex(window.name);
+            $.ajax({
+                url: 'equipment/add.do',
+                data: data.field,
+                type: 'post',//默认以get提交，以get提交如果是中文后台会出现乱码
+                dataType: 'json',
+                success: function (obj) {
+                    layer.close(index);//关闭
+                    parent.layer.close(index2);
+
+                }
+            });
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

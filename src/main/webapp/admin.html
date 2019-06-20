@@ -15,8 +15,12 @@
         }
         function loadUserManagePage() {
             $("#mainFrame").load("userManage.html");
-        }     function loadPersonCenterPage() {
+        }
+        function loadPersonCenterPage() {
             $("#mainFrame").load("personCenter.html");
+        }
+        function loadepuipmentCenterPage() {
+            $("#mainFrame").load("equipmentManage2.html");
         }
     </script>
 </head>
@@ -67,7 +71,7 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:;"><span class="layui-icon layui-icon-cellphone"></span> 所有设备</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:;"><span class="layui-icon layui-icon-camera"></span> 设备管理</a></dd>
+                        <dd><a href="javascript:loadepuipmentCenterPage();"><span class="layui-icon layui-icon-camera"></span> 设备管理</a></dd>
                         <dd><a href="javascript:;"><span class="layui-icon layui-icon-chart-screen"></span> 统计分析</a></dd>
                     </dl>
                 </li>

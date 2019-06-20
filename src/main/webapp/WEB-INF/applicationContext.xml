@@ -6,7 +6,7 @@
     <!--开启注解-->
     <context:annotation-config/>
     <!--扫描包-->
-    <context:component-scan base-package="com.isoft.service.impl,com.isoft.dao.impl"/>
+    <context:component-scan base-package="com.isoft.service.impl,com.isoft.dao.impl,com.isoft.dao"/>
     <!-- 加载JDBC配置文件-->
     <context:property-placeholder location="classpath*:jdbcConfig.properties"/>
     <!--设置数据源-->
@@ -24,5 +24,12 @@
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="mapperLocations" value="classpath:com/isoft/mapping/*Mapper.xml"/>
+    </bean>
+    <!--4 自动扫描对象关系映射 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <!--指定会话工厂，如果当前上下文中只定义了一个则该属性可省去 -->
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+        <!-- 指定要自动扫描接口的基础包，实现接口 -->
+        <property name="basePackage" value="com.isoft.dao"></property>
     </bean>
 </beans>

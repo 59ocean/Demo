@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>医疗设备检修预警系统</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <script type="text/javascript" src="jquery/jquery3.4.1.js"></script>
+<style >
+    .layui-table-cell {            overflow: visible !important;        }
+     td .layui-form-select{
+        margin-top: -10px;
+        margin-left: -15px;
+        margin-right: -15px;
+    }
+
+</style>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编d辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+</head>
+<body>
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+            table.render({
+                elem: "#userTable",
+                toolbar: "#tbl_tools",
+                url: "equipment/list.do",
+                where:{"name":$("#tool_uname").val()},
+                loading: true,
+                title: "用户信息列表",
+                page: true,
+                limit: 10,
+                id: "id",
+                limits: [5, 10, 20, 50, 100],
+                cols: [[
+                    {
+                        field: "id",
+                        title: "ID",
+                        align: "center",
+                        type: "checkbox"
+                    },
+                    {
+                        field: "name",
+                        title: "设备名",
+                        align: "center",
+                    },
+                    {
+                        field: "buyTime",
+                        title: "购买时间",
+                        align: "center",
+                    },
+                    {
+                        field: "department",
+                        title: "所属科室",
+                        align: "center",
+                    },{
+                        field: "supplier",
+                        title: "所属供应商",
+                        align: "center",
+                    },
+                    {
+                        field: "overhaulCycle",
+                        title: "检修周期",
+                        align: "center",
+                    },
+                    {
+                        field: "lastOverhaulTime",
+                        title: "上次检修时间",
+                        align: "center",
+                    },
+                    {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+                ]]
+            });
+
+
+
+        //头工具栏事件
+        table.on('toolbar(demo)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：'+ data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选': '未全选');
+                    break;
+            };
+        });
+
+        //监听工具条
+        table.on('tool(demo)', function(obj){
+            var data = obj.data;
+            alert("dd")
+            if(obj.event === 'detail'){
+                layer.msg('ID：'+ data.id + ' 的查看操作');
+            } else if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+                layer.alert('编辑行：<br>'+ JSON.stringify(data))
+            }
+        });
+
+
+    });
+    $(function () {
+       // loadAllUserInfo();
+        /*layui.use("table",function () {
+            layui.table.on('tool("tbl_tools")',function (obj) {
+                if(obj.event=="refresh"){
+                    layer.msg("click");
+                }
+            })
+        })*/
+    });
+
+    function addUserInfo() {
+        layer.open({
+            type: 2,
+            title: "添加用户信息",
+            closeBtn: 1, //不显示关闭按钮
+            area: ['400px', '500px'],
+            anim: 2,
+            content: ['addEquiment.html', 'no'], //iframe的url，no代表不显示滚动
+            success: function(layero, lockIndex) {
+                //alert(JSON.stringify(data));
+                var body = layer.getChildFrame('body', lockIndex);
+                layer.close(lockIndex);
+                location.reload();//刷新
+
+                //body.find("select,:radio,:checkbox").attr("disabled", "disabled");
+            }
+    });}
+    function refreshTable() {
+        layui.table.reload("id",{
+            page: {
+                curr: 1 //重新从第 1 页开始
+            },where: {
+                key: {
+                    uname: $("#tool_uname").val()
+                }
+            }
+        },"data");
+    }
+    function searchByUname() {
+        loadAllUserInfo();
+    }
+    function  deleteBenchById(){
+        table1=layui.table.checkStatus("id");
+        var str="";
+       $.each(table1.data,function (index,arr) {
+          str+= arr.id+",";
+       });
+    if(str.length==0)
+        layer.msg("请选择一行数据!");
+    else
+    {    layer.confirm("是否真的删除本记录?",{btn:["确定","取消"]},function (index,layero) {
+            $.ajax({
+                url:"user/deleteBanchByID.do",
+                data:{id:str},
+                method:"post",
+                success:function (e) {
+                    if(JSON.parse(e)=="success")
+                        layer.msg("删除记录成功！");
+                    else
+                        layer.msg("删除记录失败！");
+                    //对layui table的刷新
+                    layui.table.reload("id");
+                },error:function () {
+                    layer.msg("请求服务器失败！");
+                }
+            });
+        });
+    }
+    }
+    function  deleteById(id) {
+        console.log(id)
+        layer.confirm("是否真的删除本记录?",{btn:["确定","取消"]},function (index,layero) {
+            $.ajax({
+                url:"equipment/delete.do",
+                data:{id:id},
+                method:"post",
+                success:function (e) {
+                    console.log(e)
+                    if(e.success==true)
+                        layer.msg("删除记录成功！");
+                    else
+                        layer.msg("删除记录失败！");
+                    //对layui table的刷新
+                    layui.table.reload("id");
+                },error:function () {
+                    layer.msg("请求服务器失败！");
+                }
+            });
+        });
+
+    }
+    function loadAllUserInfo() {
+        layui.use("table", function () {
+            layui.table.render({
+                elem: "#userTable",
+                toolbar: "#tbl_tools",
+                url: "equipment/list.do",
+                where:{"name":$("#tool_uname").val()},
+                loading: true,
+                title: "用户信息列表",
+                page: true,
+                limit: 10,
+                id: "id",
+                limits: [5, 10, 20, 50, 100],
+                cols: [[
+                    {
+                        field: "id",
+                        title: "ID",
+                        align: "center",
+                        type: "checkbox"
+                    },
+                    {
+                        field: "name",
+                        title: "设备名",
+                        align: "center",
+                    },
+                    {
+                        field: "buyTime",
+                        title: "购买时间",
+                        align: "center",
+                    },
+                    {
+                        field: "department",
+                        title: "所属科室",
+                        align: "center",
+                    },{
+                        field: "supplier",
+                        title: "所属供应商",
+                        align: "center",
+                    },
+                    {
+                        field: "overhaulCycle",
+                        title: "检修周期",
+                        align: "center",
+                    },
+                    {
+                        field: "lastOverhaulTime",
+                        title: "上次检修时间",
+                        align: "center",
+                    },
+                    {
+                        field: "id",
+                        title: "操作",
+                        align: "center",
+                        minWidth: "10",
+                        templet: function (row) {
+                            var del = '<a href="javascript:#" onclick="deleteById('+row.id+')" title="删除"><span style="font-size: 25px;color: #FF0000;" class="layui-icon layui-icon-delete"></span></a>';
+                            var update = "<a href='javascript:addUserInfo()' title='更新'><span style='font-size: 25px;color: #0000FF;' class='layui-icon layui-icon-table'></span></a>";
+                            return del+update;
+                        }
+                    }
+                ]]
+            });
+        });
+
+    }
+</script>
+<blockquote class="layui-elem-quote">
+    设备管理
+</blockquote>
+<table id="userTable" class="layui-table" lay-filter="demo">
+
+</table>
+<script id="tbl_tools" type="text/html">
+    <a href="javascript:addUserInfo()" class="layui-btn layui-btn-danger">
+        <span class="layui-icon layui-icon-add-1"></span> 添加设备</a>
+   <!-- <a href="javascript:deleteBenchById()" class="layui-btn layui-btn-primary">
+        <span class="layui-icon layui-icon-delete" ></span> 删除用户</a>-->
+    <div class="layui-inline">
+        <input id="tool_uname" class="layui-input-block"  style="width: 100px" placeholder="请输入设备名">
+        <a href="javascript:loadAllUserInfo()" class="layui-btn layui-btn-danger">
+            <span class="layui-icon layui-icon-search"></span> 搜索</a>
+    </div>
+    <!--<a href="javascript:refreshTable()" class="layui-btn layui-btn-warm" lay-event="refresh">
+        <span class="layui-icon layui-icon-refresh"></span> 刷新</a>-->
+</script>
+<script type="text/html" id="table_role">
+        <select id="role" name="role">
+        <option value="管理员">管理员</option>
+        <option value="检修员">检修员</option>
+        <option value="职员">职员</option>
+        </select>
+</script>
+<script type="text/javascript" src="layui/layui.all.js"></script>
+</body>
+</html>
