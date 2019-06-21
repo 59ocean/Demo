@@ -10,6 +10,7 @@ public class journal {
 	private String overhaulTime;//检修时间
 	private String faultReason;//故障原因
 	private String department;//所属科室
+	private String equipmentId;//设备id
 
 
 	public String getId () {
@@ -50,5 +51,13 @@ public class journal {
 
 	public void setDepartment (String department) {
 		this.department = department;
+	}
+
+	public String getEquipmentId () {
+		return equipmentId;
+	}
+
+	public void setEquipmentId (String equipmentId) {
+		this.equipmentId = equipmentId;
 	}
 }

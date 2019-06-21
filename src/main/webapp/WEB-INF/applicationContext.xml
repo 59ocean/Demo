@@ -12,7 +12,7 @@
     <!--设置数据源-->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://106.14.116.177:3306/hospitaldb?serverTimezone=UTC"/>
+        <property name="url" value="jdbc:mysql://106.14.116.177:3306/hospitaldb?useUnicode=true&amp;characterEncoding=utf8"/>
         <property name="username" value="root"/>
         <property name="password" value="123456"/>
     </bean>

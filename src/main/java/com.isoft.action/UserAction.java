@@ -42,6 +42,7 @@ public class UserAction {
         List<Map<String, String>> list = userServiceImpl.login(uname, upwd);
         if (list.size() > 0) {
             session.setAttribute("uname", uname);
+            session.setAttribute("user",list.get(0));
             return "success";
         } else {
             return "fails";

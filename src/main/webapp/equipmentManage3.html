@@ -56,98 +56,17 @@
                      //body.find("select,:radio,:checkbox").attr("disabled", "disabled");
                  }*/
             });}
-
-        function infoeq(data) {
-            layer.open({
-                type: 2,
-                title: "查看信息",
-                closeBtn: 1, //不显示关闭按钮
-                area: ['400px', '500px'],
-                anim: 2,
-                content: ['quimentView.html?obj='+encodeURIComponent(JSON.stringify(data)), 'no'], //iframe的url，no代表不显示滚动
-                /* end: function(layero, lockIndex) {
-                     //alert(JSON.stringify(data));
-                     var body = layer.getChildFrame('body', lockIndex);
-                     layer.close(lockIndex);
-                     location.reload();//刷新
-                     console.log("ddd")
-
-                     //body.find("select,:radio,:checkbox").attr("disabled", "disabled");
-                 }*/
-
-            });}
-        function searchLoad(){
-            var name = $("#tool_uname").val()
-
-            layui.use('table', function(){
-                var table = layui.table;
-                table.render({
-                    elem: "#userTable",
-                    toolbar: "#tbl_tools",
-                    url: "equipment/list.do?name="+name,
-                    loading: true,
-                    title: "用户信息列表",
-                    page: true,
-                    limit: 10,
-                    id: "id",
-                    limits: [5, 10, 20, 50, 100],
-                    cols: [[
-                        {
-                            field: "id",
-                            title: "ID",
-                            align: "center",
-                            type: "checkbox"
-                        },
-                        {
-                            field: "name",
-                            title: "设备名",
-                            align: "center",
-                        },
-                        {
-                            field: "buyTime",
-                            title: "购买时间",
-                            align: "center",
-                        },
-                        {
-                            field: "department",
-                            title: "所属科室",
-                            align: "center",
-                        },{
-                            field: "supplier",
-                            title: "所属供应商",
-                            align: "center",
-                        },
-                        {
-                            field: "overhaulCycle",
-                            title: "检修周期",
-                            align: "center",
-                        },
-                        {
-                            field: "lastOverhaulTime",
-                            title: "上次检修时间",
-                            align: "center",
-                        },
-                        {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
-                    ]]
-                });
-            });
-
-        }
-
     </script>
     <script type="text/html" id="barDemo">
-        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
-        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">确认检修</a>
     </script>
     <script id="tbl_tools" type="text/html">
-        <a href="javascript:addUserInfo()" class="layui-btn layui-btn-danger">
-            <span class="layui-icon layui-icon-add-1"></span> 添加设备</a>
+
         <!-- <a href="javascript:deleteBenchById()" class="layui-btn layui-btn-primary">
              <span class="layui-icon layui-icon-delete" ></span> 删除用户</a>-->
         <div class="layui-inline">
             <input id="tool_uname" class="layui-input-block"  style="width: 100px" placeholder="请输入设备名">
-            <a href="javascript:searchLoad()" class="layui-btn layui-btn-danger">
+            <a href="javascript:loadAllUserInfo()" class="layui-btn layui-btn-danger">
                 <span class="layui-icon layui-icon-search"></span> 搜索</a>
         </div>
         <!--<a href="javascript:refreshTable()" class="layui-btn layui-btn-warm" lay-event="refresh">
@@ -167,7 +86,7 @@
 </table>
 
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">dd查看</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>
     <a class="layui-btn layui-btn-xs" lay-event="edit">编辑w</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
@@ -190,12 +109,7 @@
             id: "id",
             limits: [5, 10, 20, 50, 100],
             cols: [[
-                {
-                    field: "id",
-                    title: "ID",
-                    align: "center",
-                    type: "checkbox"
-                },
+
                 {
                     field: "name",
                     title: "设备名",
@@ -225,11 +139,14 @@
                     title: "上次检修时间",
                     align: "center",
                 },
+                {
+                    field: "nextOverhaulTime",
+                    title: "下次应检修时间",
+                    align: "center",
+                },
                 {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
             ]]
         });
-
-
         //监听表格复选框选择
         table.on('checkbox(demo)', function(obj){
             console.log(obj)
@@ -239,8 +156,7 @@
             var data = obj.data;
             console.log(data)
             if(obj.event === 'detail'){
-               /* layer.msg('ID：'+ data.id + ' 的查看操作');*/
-                infoeq(data)
+                layer.msg('ID：'+ data.id + ' 的查看操作');
             } else if(obj.event === 'del'){
                 layer.confirm('真的删除行么', function(index){
                     deleteById(data.id)
@@ -283,7 +199,7 @@
                     method:"post",
                     success:function (e) {
                         console.log(e)
-                        if(e.success==true)
+                        if(e.success)
                             layer.msg("删除记录成功！");
                         else
                             layer.msg("删除记录失败！");

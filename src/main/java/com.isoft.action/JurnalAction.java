@@ -2,6 +2,7 @@ package com.isoft.action;
 
 import com.isoft.entity.Equipment;
 import com.isoft.service.IEquipmentService;
+import com.isoft.service.IJournalService;
 import com.isoft.util.Json;
 import com.isoft.util.Page;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,37 +25,23 @@ import java.util.UUID;
  */
 @Controller
 @Scope("prototype")
-@RequestMapping("/equipment")
-public class EquipmentAction {
+@RequestMapping("/journal")
+public class JurnalAction {
 	@Autowired
-	private IEquipmentService equipmentService;
+	private IJournalService journalService;
 
 	@RequestMapping("/list")
 	@ResponseBody
 	public Page list(HttpServletRequest request){
-		String name = request.getParameter("name");
+		String equipmentName = request.getParameter("equipmentName");
 		String page = request.getParameter("page");
 		String limit = request.getParameter("limit");
 		Map<String,Object> params = new HashMap<>();
-		params.put("name",name);
+		params.put("equipmentName",equipmentName);
 		int startIndex = (Integer.valueOf(page) - 1) * Integer.valueOf(limit);
 		params.put("startIndex",startIndex);
 		params.put("limit",Integer.valueOf(limit));
-		return equipmentService.getList(params);
-	}
-	@RequestMapping("/list2")
-	@ResponseBody
-	public Page list2(HttpServletRequest request){
-		String name = request.getParameter("name");
-		String page = request.getParameter("page");
-		String limit = request.getParameter("limit");
-
-		Map<String,Object> params = new HashMap<>();
-		params.put("name",name);
-		int startIndex = (Integer.valueOf(page) - 1) * Integer.valueOf(limit);
-		params.put("startIndex",startIndex);
-		params.put("limit",Integer.valueOf(limit));
-		return equipmentService.getList(params);
+		return journalService.getList(params);
 	}
 
 	@RequestMapping(value="/add.do")
@@ -65,7 +52,7 @@ public class EquipmentAction {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		equipment.setBuyTime(sdf.parse(buyTime2));
 		equipment.setId(uuid);
-		equipmentService.add(equipment);
+		journalService.add(equipment);
 
 		return Json.ok();
 	}
@@ -73,7 +60,7 @@ public class EquipmentAction {
 	@RequestMapping("/delete.do")
 	@ResponseBody
 	public Json delete(String id){
-		equipmentService.delete(id);
+		journalService.delete(id);
 		System.out.println(id);
 		return Json.ok();
 	}
@@ -85,7 +72,7 @@ public class EquipmentAction {
 	public Json update(Equipment equipment,String buyTime2) throws ParseException {
 	/*	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		equipment.setBuyTime(sdf.parse(buyTime2));*/
-		equipmentService.update(equipment);
+		journalService.update(equipment);
 		return Json.ok();
 	}
 

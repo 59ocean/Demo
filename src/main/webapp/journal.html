@@ -84,49 +84,35 @@
                 table.render({
                     elem: "#userTable",
                     toolbar: "#tbl_tools",
-                    url: "equipment/list.do?name="+name,
+                    url: "journal/list.do?equipmentName="+name,
                     loading: true,
-                    title: "用户信息列表",
+                    title: "信息列表",
                     page: true,
                     limit: 10,
                     id: "id",
                     limits: [5, 10, 20, 50, 100],
                     cols: [[
+
                         {
-                            field: "id",
-                            title: "ID",
-                            align: "center",
-                            type: "checkbox"
-                        },
-                        {
-                            field: "name",
+                            field: "equipmentName",
                             title: "设备名",
                             align: "center",
                         },
                         {
-                            field: "buyTime",
-                            title: "购买时间",
+                            field: "overhaulTime",
+                            title: "检修时间",
                             align: "center",
                         },
                         {
+                            field: "faultReason",
+                            title: "故障原因",
+                            align: "center",
+                        },{
                             field: "department",
                             title: "所属科室",
                             align: "center",
-                        },{
-                            field: "supplier",
-                            title: "所属供应商",
-                            align: "center",
                         },
-                        {
-                            field: "overhaulCycle",
-                            title: "检修周期",
-                            align: "center",
-                        },
-                        {
-                            field: "lastOverhaulTime",
-                            title: "上次检修时间",
-                            align: "center",
-                        },
+
                         {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
                     ]]
                 });
@@ -141,8 +127,6 @@
         <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
     </script>
     <script id="tbl_tools" type="text/html">
-        <a href="javascript:addUserInfo()" class="layui-btn layui-btn-danger">
-            <span class="layui-icon layui-icon-add-1"></span> 添加设备</a>
         <!-- <a href="javascript:deleteBenchById()" class="layui-btn layui-btn-primary">
              <span class="layui-icon layui-icon-delete" ></span> 删除用户</a>-->
         <div class="layui-inline">
@@ -182,7 +166,7 @@
         table.render({
             elem: "#userTable",
             toolbar: "#tbl_tools",
-            url: "equipment/list.do",
+            url: "journal/list.do",
             loading: true,
             title: "用户信息列表",
             page: true,
@@ -191,40 +175,25 @@
             limits: [5, 10, 20, 50, 100],
             cols: [[
                 {
-                    field: "id",
-                    title: "ID",
-                    align: "center",
-                    type: "checkbox"
-                },
-                {
-                    field: "name",
+                    field: "equipmentName",
                     title: "设备名",
                     align: "center",
                 },
                 {
-                    field: "buyTime",
-                    title: "购买时间",
+                    field: "overhaulTime",
+                    title: "检修时间",
                     align: "center",
                 },
                 {
+                    field: "faultReason",
+                    title: "故障原因",
+                    align: "center",
+                },{
                     field: "department",
                     title: "所属科室",
                     align: "center",
-                },{
-                    field: "supplier",
-                    title: "所属供应商",
-                    align: "center",
                 },
-                {
-                    field: "overhaulCycle",
-                    title: "检修周期",
-                    align: "center",
-                },
-                {
-                    field: "lastOverhaulTime",
-                    title: "上次检修时间",
-                    align: "center",
-                },
+
                 {fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
             ]]
         });

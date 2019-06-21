@@ -13,6 +13,7 @@ import java.util.Map;
 
 public interface EquipmentDao {
 	public List findAll(Map map);
+	public List findWarnAll(Map map);
 	public int getCount(Map map);
 
 	public void add(Equipment equipment);

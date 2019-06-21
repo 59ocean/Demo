@@ -23,8 +23,9 @@
 </head>
 <body>
 <script>
-    layui.use('table', function(){
+    layui.use(['layer', 'form','element','table','util'], function(){
         var table = layui.table;
+
             table.render({
                 elem: "#userTable",
                 toolbar: "#tbl_tools",
@@ -52,6 +53,7 @@
                         field: "buyTime",
                         title: "购买时间",
                         align: "center",
+                        templet : "<div>{{# if(d.buyTime!=null){ }}{{ layui.util.toDateString(d.buyTime) }}{{# } }}</div>"
                     },
                     {
                         field: "department",
@@ -76,7 +78,28 @@
                 ]]
             });
 
+        layui.laytpl.toDateString = function(d, format){
+            var date = new Date(d || new Date())
+                ,ymd = [
+                this.digit(date.getFullYear(), 4)
+                ,this.digit(date.getMonth() + 1)
+                ,this.digit(date.getDate())
+            ]
+                ,hms = [
+                this.digit(date.getHours())
+                ,this.digit(date.getMinutes())
+                ,this.digit(date.getSeconds())
+            ];
 
+            format = format || 'yyyy-MM-dd HH:mm:ss';
+
+            return format.replace(/yyyy/g, ymd[0])
+                .replace(/MM/g, ymd[1])
+                .replace(/dd/g, ymd[2])
+                .replace(/HH/g, hms[0])
+                .replace(/mm/g, hms[1])
+                .replace(/ss/g, hms[2]);
+        };
 
         //头工具栏事件
         table.on('toolbar(demo)', function(obj){

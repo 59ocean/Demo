@@ -12,6 +12,7 @@ import java.util.Map;
 public interface IEquipmentService {
 
 	public Page getList(Map<String,Object> params);
+	public Page getList2(Map<String,Object> params);
 
 	public void update(Equipment equipment);
 

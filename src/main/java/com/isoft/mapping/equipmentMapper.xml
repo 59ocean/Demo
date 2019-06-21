@@ -3,18 +3,33 @@
 <mapper namespace="com.isoft.dao.EquipmentDao">
 
     <select id="findAll" parameterType="map" resultType="map">
-        select * from tb_equipment t
-       <!-- <where>
+        select t.id as id,t.supplier as supplier,t.last_overhaul_time as lastOverhaulTime,t.overhaul_cycle
+        as overhaulCycle,t.buy_time as buyTime,t.name as name,t.department as department
+        from tb_equipment t
+        <where>
             <if test="name!=null">
                 and t.name like concat("%",concat(#{name},"%"))
             </if>
-        </where>-->
+        </where>
         limit #{startIndex},#{limit}
     </select>
+    <select id="findWarnAll" parameterType="map" resultType="map">
+        select t.id as id,t.supplier as supplier,t.last_overhaul_time as lastOverhaulTime,t.overhaul_cycle
+        as overhaulCycle,t.buy_time as buyTime,t.name as name,t.department as department,
+        date_add(t.last_overhaul_time,INTERVAL t.overhaul_cycle DAY) AS nextOverhaulTime
+        from tb_equipment t
+        where 1=1 and date_add(t.last_overhaul_time,INTERVAL t.overhaul_cycle DAY) < NOW()
+            <if test="name!=null">
+                and t.name like concat("%",concat(#{name},"%"))
+            </if>
+        limit #{startIndex},#{limit}
+    </select>
+
+
     <select id="getCount" resultType="int">
         select count(*) from tb_equipment
     </select>
-    <delete id="delete" parameterType="string">
+    <delete id="delete" parameterType="String">
         delete from tb_equipment where id =#{id}
         <!--     <foreach collection="array" index="index" open="(" close=")" separator=",">
              #{id}
@@ -22,7 +37,7 @@
     </delete>
 
     <update id="update" parameterType="com.isoft.entity.Equipment" >
-        update sys_role
+        update tb_equipment
         <set >
             <if test="name != null" >
                 name = #{name,jdbcType=VARCHAR},

@@ -1,4 +1,14 @@
-<!DOCTYPE html>
+<%--
+  Created by IntelliJ IDEA.
+  User: hori
+  Date: 2019/6/21
+  Time: 14:31
+  To change this template use File | Settings | File Templates.
+--%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jstl/fmt" prefix="fmt"%>
 <html>
 <head>
     <meta charset="utf-8">
@@ -21,6 +31,9 @@
         }
         function loadepuipmentCenterPage() {
             $("#mainFrame").load("equipmentManage2.html");
+        }
+        function loadepuipmentCenterPage2() {
+            $("#mainFrame").load("equipmentManage3.html");
         }
         function loadjournalCenterPage() {
             $("#mainFrame").load("journal.html");
@@ -74,7 +87,12 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a href="javascript:;"><span class="layui-icon layui-icon-cellphone"></span> 所有设备</a>
                     <dl class="layui-nav-child">
-                        <dd><a href="javascript:loadepuipmentCenterPage();"><span class="layui-icon layui-icon-camera"></span> 设备管理</a></dd>
+                        <c:if test="${user.role eq '管理员' || user.role eq '职员'}">
+                            <dd><a href="javascript:loadepuipmentCenterPage();"><span class="layui-icon layui-icon-camera"></span> 设备管理</a></dd>
+                        </c:if>
+                        <c:if test="${user.role eq '检修员'}">
+                            <dd><a href="javascript:loadepuipmentCenterPage2();"><span class="layui-icon layui-icon-camera"></span> 设备管理</a></dd>
+                        </c:if>
                         <dd><a href="javascript:;"><span class="layui-icon layui-icon-chart-screen"></span> 统计分析</a></dd>
                     </dl>
                 </li>

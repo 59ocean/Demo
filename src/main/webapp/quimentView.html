@@ -6,11 +6,12 @@
     <title>医疗设备检修预警系统</title>
     <link rel="stylesheet" href="layui/css/layui.css">
     <script type="text/javascript" src="jquery/jquery3.4.1.js"></script>
-    <script type="text/javascript" src="plugins/layui-v2/layui.all.js"></script>
+    <script type="text/javascript" src="plugins/layui-v2/layui.js"></script>
 </head>
 <body style="margin-right: 50px">
 <br>
-<form name="form" class="layui-form"lay-filter="formTest" style="margin-top: 20px;" method="post" action="">
+<form name="form" class="layui-form"lay-filter="formdata" style="margin-top: 20px;" method="post" action="">
+    <input type="hidden" name="id" id="id">
     <div class="layui-form-item">
         <label class="layui-form-label">设备名</label>
         <div class="layui-input-block">
@@ -44,39 +45,40 @@
     <!-- 按钮组 -->
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit="" lay-filter="btnSubmit" >立即提交</button>
             <button class="layui-btn layui-btn-primary" id="close">关闭</button>
         </div>
     </div>
     <br>
 </form>
-<script>
-    layui.use('laydate', function(){
-        var laydate = layui.laydate;
 
-        //执行一个laydate实例
-        laydate.render({
-            elem: '#buyTime' //指定元素
-        });
-    });
-
-
-</script>
 
 <script type="text/javascript">
+    $("#close").click(function(){
+        var index2 = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index2);
+
+    })
+    //监
+    $(function(){
+        var data =JSON.parse(decodeURIComponent(getRequestParam().obj));
+        console.log(data.name)
+        $("#department").val(data.department)
+        $("#overhaulCycle").val(data.overhaulCycle)
+        $("#supplier").val(data.supplier)
+        $("#name").val(data.name)
+        $("#id").val(data.id)
+    })
     layui.use(['form', 'layedit', 'laydate','jquery'], function() {
         var form = layui.form;
         var $ = layui.jquery;
-        //获取传参
-
-
-        //监听提交
+        var data =JSON.parse(decodeURIComponent(getRequestParam().obj));
+       听提交
         form.on('submit(btnSubmit)', function (data) {
-            console.log("shuju",data)
+            console.log(data)
             var index = layer.load(1);//开启进度条
             var index2 = parent.layer.getFrameIndex(window.name);
             $.ajax({
-                url: 'equipment/add.do',
+                url: 'equipment/update.do',
                 data: data.field,
                 type: 'post',//默认以get提交，以get提交如果是中文后台会出现乱码
                 dataType: 'json',
@@ -90,6 +92,21 @@
         });
 
     });
+    function getRequestParam() {
+        var urlInfo = window.location.href;
+        var argsIndex = urlInfo.indexOf("?");
+        var args = urlInfo.substring((argsIndex + 1)).split("&");
+        var argsInfo = "{";
+        for ( var i = 0; i < args.length; i++) {
+            var argResult = args[i].split("=");
+            argsInfo = argsInfo + "'" + argResult[0] + "':'" + argResult[1] + "'";
+            if (i != args.length - 1) {
+                argsInfo += ',';
+            }
+        }
+        argsInfo += "}";
+        return eval('(' + argsInfo + ')');
+    }
 </script>
 </body>
 </html>

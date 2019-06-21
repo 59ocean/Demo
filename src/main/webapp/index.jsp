@@ -44,7 +44,7 @@
                     data:$("#loginForm").serialize(),//表单序列化
                     success:function (result) {
                         if(JSON.parse(result)=="success")
-                            window.location.href="admin.html";
+                            window.location.href="shouye.jsp";
                         else
                         {
                             layer.msg("登录失败！",{icon:2});
